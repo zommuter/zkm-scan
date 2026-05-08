@@ -1,0 +1,34 @@
+name: scan
+version: 0.1.0
+description: >
+  OCR images and scanned PDFs into the knowledge store.
+  Processes JPEG, PNG, TIFF, BMP, GIF, WEBP images and image-only PDFs
+  via tesseract. Emits one markdown file per document. Silently skips files
+  whose OCR output falls below the minimum character threshold.
+
+creates_dirs:
+  - scans
+  - originals/scans
+  - inbox/scans
+
+config:
+  SCAN_SOURCE_DIR:
+    required: false
+    default: ""
+    description: >
+      Optional directory to scan recursively for image and PDF files. Read-only.
+      When empty, only items already in the store inbox (deposited by zkm-eml,
+      zkm-photo, or other plugins) are processed.
+  SCAN_LANG:
+    required: false
+    default: "deu+eng"
+    description: >
+      Tesseract language(s) to use, joined with '+' (e.g. 'deu+eng', 'eng').
+      The corresponding tesseract language packs must be installed on the system.
+  SCAN_MIN_TEXT_CHARS:
+    required: false
+    default: "10"
+    description: >
+      Minimum number of OCR characters required to emit an md file.
+      Files below this threshold are silently skipped (already-scanned images
+      with no readable content, blank pages, etc.).
