@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "zkm-scan"
 version = "0.1.1"
 description = "zkm plugin: OCR images and scanned PDFs into the knowledge store"
+license = "MIT"
 requires-python = ">=3.14"
 dependencies = [
     "pytesseract>=0.3",
