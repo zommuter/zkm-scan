@@ -29,8 +29,8 @@ git clone https://github.com/zommuter/zkm-scan.git plugins/zkm-scan
 | Variable | Default | Description |
 |---|---|---|
 | `SCAN_SOURCE_DIR` | *(empty)* | Optional external directory to scan recursively |
-| `SCAN_LANG` | `eng` | Tesseract language code(s), e.g. `eng+deu` |
-| `SCAN_MIN_TEXT_CHARS` | `50` | Min OCR chars to emit md; below this → silently skip |
+| `SCAN_LANG` | `deu+eng` | Tesseract language code(s), e.g. `deu+eng` or `eng` |
+| `SCAN_MIN_TEXT_CHARS` | `10` | Min OCR chars to emit md; below this → silently skip |
 
 ## Run
 
