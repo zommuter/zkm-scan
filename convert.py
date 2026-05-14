@@ -44,9 +44,9 @@ def convert(store_path: Path, config: dict, *, progress=None) -> list[Path]:
     Returns a list of paths to newly created .md files.
     progress: optional callback(current, total, message). May raise PluginInterrupt.
     """
-    lang = config.get("SCAN_LANG", "deu+eng")
-    min_chars = int(config.get("SCAN_MIN_TEXT_CHARS", 10))
-    src_dir_raw = config.get("SCAN_SOURCE_DIR", "")
+    lang = str(config.get("lang", "deu+eng") or "deu+eng")
+    min_chars = int(config.get("min_text_chars", 10))
+    src_dir_raw = str(config.get("source_dir", "") or "")
 
     for subdir in ["scans", "originals/scans", "inbox/scans"]:
         (store_path / subdir).mkdir(parents=True, exist_ok=True)
@@ -80,7 +80,7 @@ def convert(store_path: Path, config: dict, *, progress=None) -> list[Path]:
     if src_dir_raw:
         src = Path(src_dir_raw).expanduser().resolve()
         if not src.exists():
-            raise FileNotFoundError(f"SCAN_SOURCE_DIR does not exist: {src}")
+            raise FileNotFoundError(f"source_dir does not exist: {src}")
         src_candidates = sorted(
             f for f in src.rglob("*")
             if f.is_file() and f.suffix.lower() in _SCAN_EXTS
