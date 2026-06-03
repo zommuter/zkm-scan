@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "zkm-scan"
-version = "0.2.0"
+version = "0.3.0"
 description = "zkm plugin: OCR images and scanned PDFs into the knowledge store"
 license = "MIT"
 requires-python = ">=3.11"
@@ -37,6 +37,9 @@ dependencies = [
 Homepage = "https://github.com/zommuter/zkm"
 Repository = "https://github.com/zommuter/zkm-scan"
 Issues = "https://github.com/zommuter/zkm-scan/issues"
+
+[project.entry-points."zkm.plugins"]
+scan = "zkm_scan"
 
 [project.optional-dependencies]
 dev = [
