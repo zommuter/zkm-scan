@@ -24,8 +24,9 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     copies). Probe failures (corrupt PDF) fall through to OCR — when in doubt,
     scan.
   - **Tests**: `tests/test_roadmap.py::test_6913_pdf_producer_sidecar_skipped`,
-    `::test_6913_text_layer_pdf_skipped_and_logged`,
-    `::test_6913_scanned_pdf_still_processed` (`# roadmap:6913`) (currently RED)
+    `::test_6913_text_layer_pdf_skipped_and_logged` (`# roadmap:6913`)
+    (currently RED); `::test_6913_scanned_pdf_still_processed` is a
+    green-by-design guard — it must STAY green (do not over-skip)
   - **Done-check**: `uv run pytest tests/test_roadmap.py -k 6913`
   - **Context**: ARCHITECTURE.md §Routing contract (chosen policy + rejected
     alternatives; judgment call in REVIEW_ME.md). zkm-pdf reference:
