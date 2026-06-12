@@ -1,12 +1,12 @@
-"""Tests for zkm-scan convert.py.
+"""Tests for zkm_scan.convert.
 
 All tests mock pytesseract.image_to_string and pdf2image.convert_from_path
-so the test suite runs without system tesseract or poppler installed.
+(at the `zkm_scan.convert.*` seams — NOT the root `convert` shim) so the suite
+runs without system tesseract or poppler installed.
 """
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from unittest.mock import patch
 
@@ -14,9 +14,11 @@ import frontmatter
 import pytest
 from PIL import Image
 
-from convert import PLUGIN_NAME, PLUGIN_VERSION, convert
+from conftest import cfg, make_inbox_item, make_jpeg, make_png, make_store
+from zkm_scan.convert import PLUGIN_NAME, PLUGIN_VERSION, convert
 
-from conftest import make_store
+OCR = "zkm_scan.convert.pytesseract.image_to_string"
+PDF2IMG = "zkm_scan.convert._pdf_to_pil_images"
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────
@@ -33,63 +35,11 @@ def src(tmp_path: Path) -> Path:
     return d
 
 
-def cfg(src_dir: Path | None = None, lang: str = "deu+eng", min_chars: int = 10) -> dict:
-    return {
-        "SCAN_SOURCE_DIR": str(src_dir) if src_dir else "",
-        "SCAN_LANG": lang,
-        "SCAN_MIN_TEXT_CHARS": str(min_chars),
-    }
-
-
-def make_jpeg(path: Path, content: bytes | None = None) -> Path:
-    """Write a minimal JPEG to path (or content bytes if provided)."""
-    if content is not None:
-        path.write_bytes(content)
-        return path
-    img = Image.new("RGB", (64, 64), color=(128, 128, 128))
-    img.save(path, format="JPEG")
-    return path
-
-
-def make_png(path: Path) -> Path:
-    img = Image.new("RGB", (32, 32), color=(200, 100, 50))
-    img.save(path, format="PNG")
-    return path
-
-
-def make_inbox_item(
-    store: Path,
-    filename: str,
-    plugin: str = "eml",
-) -> tuple[Path, Path]:
-    """Create a JPEG CAS object + inbox symlink + .origin.json sidecar."""
-    cas_dir = store / "originals" / "scans" / "_objects" / "ab"
-    cas_dir.mkdir(parents=True, exist_ok=True)
-    cas_obj = cas_dir / filename
-    make_jpeg(cas_obj)
-
-    inbox_dir = store / "inbox" / "emails"
-    inbox_dir.mkdir(parents=True, exist_ok=True)
-    link = inbox_dir / filename
-    link.symlink_to(cas_obj)
-
-    sha = "ab" * 32  # fake sha256
-    sidecar = cas_obj.with_name(cas_obj.name + ".json")
-    sidecar.write_text(
-        json.dumps({
-            "schema": 1,
-            "sha256": sha,
-            "producers": [{"plugin": plugin, "message": "mail/msg.md", "sha256": sha}],
-        })
-    )
-    return cas_obj, sidecar
-
-
 # ── 1. Happy path ─────────────────────────────────────────────────────────────
 
 def test_convert_creates_md_with_correct_frontmatter(store, src):
     make_jpeg(src / "receipt.jpg")
-    with patch("convert.pytesseract.image_to_string", return_value="Invoice total 42 EUR"):
+    with patch(OCR, return_value="Invoice total 42 EUR"):
         created = convert(store, cfg(src))
     assert len(created) == 1
     md = created[0]
@@ -111,7 +61,7 @@ def test_convert_creates_md_with_correct_frontmatter(store, src):
 
 def test_convert_idempotent(store, src):
     make_jpeg(src / "receipt.jpg")
-    with patch("convert.pytesseract.image_to_string", return_value="Some scanned text here"):
+    with patch(OCR, return_value="Some scanned text here"):
         first = convert(store, cfg(src))
         assert len(first) == 1
         second = convert(store, cfg(src))
@@ -125,7 +75,7 @@ def test_convert_dedup_by_sha256(store, src):
     img = Image.new("RGB", (64, 64), color=(10, 20, 30))
     img.save(src / "copy_a.jpg", format="JPEG")
     img.save(src / "copy_b.jpg", format="JPEG")
-    with patch("convert.pytesseract.image_to_string", return_value="Duplicate scan content"):
+    with patch(OCR, return_value="Duplicate scan content"):
         created = convert(store, cfg(src))
     assert len(created) == 1
 
@@ -137,7 +87,7 @@ def test_progress_called_for_each_item(store, src):
     make_jpeg(src / "b.jpg")
     make_png(src / "c.png")
     calls: list[tuple] = []
-    with patch("convert.pytesseract.image_to_string", return_value="text content here"):
+    with patch(OCR, return_value="text content here"):
         convert(store, cfg(src), progress=lambda c, t, m: calls.append((c, t, m)))
     assert len(calls) == 3
     totals = {t for _, t, _ in calls}
@@ -149,7 +99,7 @@ def test_progress_called_for_each_item(store, src):
 def test_unowned_inbox_items_noop(store):
     """Inbox item with an unknown producer plugin → [] (no-op contract)."""
     make_inbox_item(store, "foreign.jpg", plugin="unknown-plugin")
-    with patch("convert.pytesseract.image_to_string", return_value="some text"):
+    with patch(OCR, return_value="some text"):
         created = convert(store, cfg())
     assert created == []
 
@@ -158,7 +108,7 @@ def test_unowned_inbox_items_noop(store):
 
 def test_below_min_chars_skipped(store, src):
     make_jpeg(src / "blank.jpg")
-    with patch("convert.pytesseract.image_to_string", return_value=""):
+    with patch(OCR, return_value=""):
         created = convert(store, cfg(src, min_chars=10))
     assert created == []
     # No scans/ md written
@@ -174,8 +124,8 @@ def test_pdf_input_creates_per_doc_md(store, src):
     pdf_path.write_bytes(b"%PDF-1.4 fake")  # content doesn't matter; pdf2image is mocked
     page_imgs = [Image.new("RGB", (64, 64)), Image.new("RGB", (64, 64))]
     with (
-        patch("convert._pdf_to_pil_images", return_value=page_imgs),
-        patch("convert.pytesseract.image_to_string", side_effect=["Page one text", "Page two text"]),
+        patch(PDF2IMG, return_value=page_imgs),
+        patch(OCR, side_effect=["Page one text", "Page two text"]),
     ):
         created = convert(store, cfg(src))
     assert len(created) == 1
@@ -201,7 +151,7 @@ def test_cancellation_interrupt_mid_run(store, src):
         if call_count == 2:
             raise KeyboardInterrupt
 
-    with patch("convert.pytesseract.image_to_string", return_value="Some scanned text here"):
+    with patch(OCR, return_value="Some scanned text here"):
         with pytest.raises(KeyboardInterrupt):
             convert(store, cfg(src), progress=progress_interrupt)
 
@@ -210,11 +160,11 @@ def test_cancellation_interrupt_mid_run(store, src):
     assert len(md_files) == 1
 
 
-# ── 9. SCAN_SOURCE_DIR: CAS + inbox symlink created ──────────────────────────
+# ── 9. source_dir: CAS + inbox symlink created ───────────────────────────────
 
 def test_scan_source_dir_creates_cas_and_inbox_symlink(store, src):
     make_jpeg(src / "doc.jpg")
-    with patch("convert.pytesseract.image_to_string", return_value="Scanned document text"):
+    with patch(OCR, return_value="Scanned document text"):
         convert(store, cfg(src))
 
     cas_files = list((store / "originals" / "scans" / "_objects").rglob("*"))
@@ -224,7 +174,7 @@ def test_scan_source_dir_creates_cas_and_inbox_symlink(store, src):
     assert any(lnk.is_symlink() for lnk in inbox_links)
 
 
-# ── 10. Nonexistent SCAN_SOURCE_DIR raises ───────────────────────────────────
+# ── 10. Nonexistent source_dir raises ────────────────────────────────────────
 
 def test_scan_source_dir_nonexistent_raises(store):
     with pytest.raises(FileNotFoundError):
@@ -236,7 +186,7 @@ def test_scan_source_dir_nonexistent_raises(store):
 def test_owned_inbox_image_processed(store):
     """An eml-owned JPEG in inbox/ is OCR'd and produces a scans/ md."""
     make_inbox_item(store, "attachment.jpg", plugin="eml")
-    with patch("convert.pytesseract.image_to_string", return_value="Invoice for services rendered"):
+    with patch(OCR, return_value="Invoice for services rendered"):
         created = convert(store, cfg())
     assert len(created) == 1
     post = frontmatter.load(created[0])
@@ -249,12 +199,12 @@ def test_owned_inbox_image_processed(store):
 def test_photo_owned_inbox_image_processed(store):
     """A photo-owned JPEG in inbox/ is OCR'd (whiteboard photo, receipt photo, etc.)."""
     make_inbox_item(store, "photo_receipt.jpg", plugin="photo")
-    with patch("convert.pytesseract.image_to_string", return_value="Total: CHF 18.50"):
+    with patch(OCR, return_value="Total: CHF 18.50"):
         created = convert(store, cfg())
     assert len(created) == 1
 
 
-# ── 13. SCAN_LANG forwarded to pytesseract ───────────────────────────────────
+# ── 13. lang config forwarded to pytesseract ─────────────────────────────────
 
 def test_scan_lang_passed_to_pytesseract(store, src):
     make_jpeg(src / "doc.jpg")
@@ -264,8 +214,31 @@ def test_scan_lang_passed_to_pytesseract(store, src):
         calls.append({"lang": lang})
         return "Captured lang test text"
 
-    with patch("convert.pytesseract.image_to_string", side_effect=capture):
+    with patch(OCR, side_effect=capture):
         convert(store, cfg(src, lang="fra+deu"))
 
     assert calls
     assert all(c["lang"] == "fra+deu" for c in calls)
+
+
+# ── 14. Root shim re-exports the package implementation ──────────────────────
+
+def test_root_shim_reexports_package_convert():
+    """Filesystem discovery loads root convert.py — it must be the same function."""
+    import importlib.util
+
+    shim_path = Path(__file__).parent.parent / "convert.py"
+    spec = importlib.util.spec_from_file_location("zkm_scan_root_shim", shim_path)
+    shim = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(shim)
+    assert shim.convert is convert
+
+
+# ── 15. plugin.yaml copies stay in sync ──────────────────────────────────────
+
+def test_plugin_yaml_copies_identical():
+    """Root plugin.yaml (filesystem discovery) == src/zkm_scan/plugin.yaml (wheel)."""
+    repo = Path(__file__).parent.parent
+    root_copy = (repo / "plugin.yaml").read_bytes()
+    pkg_copy = (repo / "src" / "zkm_scan" / "plugin.yaml").read_bytes()
+    assert root_copy == pkg_copy
