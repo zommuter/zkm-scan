@@ -48,7 +48,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Context**: ARCHITECTURE.md §Dedup & idempotency. Shares the ledger
     format/helper with 6913 (see header note).
 
-- [ ] Graceful error for missing tesseract language packs [ROUTINE] <!-- id:5c02 -->
+- [x] Graceful error for missing tesseract language packs [ROUTINE] <!-- id:5c02 -->
   - **Acceptance**: Before any OCR work, the configured `lang` string is split
     on `+` and checked against `pytesseract.get_languages()`; if any requested
     pack is missing, `convert()` raises `ValueError` whose message names the
@@ -139,3 +139,4 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
 - id:5d7d — OCR confidence in frontmatter (observe-only)
 - id:f7d3 — HEIC/HEIF support via optional pillow-heif extra
 - id:aae8 — tz-aware EXIF dates + pages field for PDF-sourced docs
+- id:5c02 — graceful ValueError for missing tesseract language packs
