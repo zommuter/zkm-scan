@@ -12,7 +12,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
 
 ## Items
 
-- [ ] Honor the zkm-pdf routing contract: skip text-layer PDFs [ROUTINE] <!-- id:6913 -->
+- [x] Honor the zkm-pdf routing contract: skip text-layer PDFs [ROUTINE] <!-- id:6913 -->
   - **Acceptance**: A PDF whose CAS sidecar already lists a `pdf` producer is not
     OCR'd and produces no md. A PDF with an extractable text layer of ≥
     `pdf_text_threshold` chars (new config key, default 100 — mirrors zkm-pdf's
@@ -33,7 +33,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     `~/src/zkm/plugins/zkm-pdf/src/zkm_pdf/convert.py` (`_extract_text`,
     `_log_skipped`). Applies to both input paths (inbox + source_dir).
 
-- [ ] Skip-ledger for below-threshold OCR output (stop re-OCR every run) [ROUTINE] <!-- id:8810 -->
+- [x] Skip-ledger for below-threshold OCR output (stop re-OCR every run) [ROUTINE] <!-- id:8810 -->
   - **Acceptance**: When OCR output falls below `min_text_chars`, the file's
     sha256 is recorded in `.zkm-state/zkm-scan-skipped.jsonl` with
     `reason: "below-min-chars"`, the observed `ocr_chars`, and the `threshold`
@@ -64,7 +64,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Done-check**: `uv run pytest tests/test_roadmap.py -k 5c02`
   - **Context**: mock seam `zkm_scan.convert.pytesseract.get_languages`.
 
-- [ ] Configurable DPI for PDF rasterization [ROUTINE] <!-- id:c199 -->
+- [x] Configurable DPI for PDF rasterization [ROUTINE] <!-- id:c199 -->
   - **Acceptance**: New config key `dpi` (int, default 300) forwarded as
     `dpi=` kwarg to `pdf2image.convert_from_path` for every PDF. Default 300
     (OCR-quality choice over pdf2image's implicit 200 — judgment call in
@@ -75,7 +75,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Done-check**: `uv run pytest tests/test_roadmap.py -k c199`
   - **Context**: `_ocr_pdf` / `_pdf_to_pil_images` in `src/zkm_scan/convert.py`.
 
-- [ ] Record OCR confidence in frontmatter (observe-only) [ROUTINE] <!-- id:5d7d -->
+- [x] Record OCR confidence in frontmatter (observe-only) [ROUTINE] <!-- id:5d7d -->
   - **Acceptance**: Each emitted md gains `ocr_confidence`: the mean of all
     word-level confidences ≥ 0 from `pytesseract.image_to_data` (dict output),
     across all pages for PDFs, rounded to 1 decimal. No skipping/flagging based
@@ -89,7 +89,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     tesseract twice per image — either derive text from `image_to_data` output
     or accept one extra pass and say so in the commit message.
 
-- [ ] HEIC/HEIF input support via optional pillow-heif [ROUTINE] <!-- id:f7d3 -->
+- [x] HEIC/HEIF input support via optional pillow-heif [ROUTINE] <!-- id:f7d3 -->
   - **Acceptance**: `.heic`/`.heif` join the scannable extensions. Support is
     probed by a LAZY `import pillow_heif` at convert() time (not module import —
     the dep is optional and must not break plain installs):
@@ -105,7 +105,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Context**: extension sets `_IMAGE_EXTS`/`_SCAN_EXTS`; ledger helper from
     6913/8810.
 
-- [ ] Frontmatter conformance: tz-aware EXIF dates + pages for PDFs [ROUTINE] <!-- id:aae8 -->
+- [x] Frontmatter conformance: tz-aware EXIF dates + pages for PDFs [ROUTINE] <!-- id:aae8 -->
   - **Acceptance**: (1) The EXIF date path produces a tz-aware ISO 8601 string —
     EXIF `DateTimeOriginal` has no timezone, so attach the LOCAL timezone
     (`datetime.astimezone()` on the naive value), matching the mtime path's
@@ -133,4 +133,9 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
 
 ## Done (relay-verified)
 
-(none yet)
+- id:6913 — zkm-pdf routing contract (text-layer probe + pdf-producer sidecar skip)
+- id:8810 — below-threshold skip ledger (no re-OCR on unchanged threshold)
+- id:c199 — configurable DPI for PDF rasterization (default 300)
+- id:5d7d — OCR confidence in frontmatter (observe-only)
+- id:f7d3 — HEIC/HEIF support via optional pillow-heif extra
+- id:aae8 — tz-aware EXIF dates + pages field for PDF-sourced docs

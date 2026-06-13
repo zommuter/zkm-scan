@@ -29,6 +29,7 @@ dependencies = [
     "pytesseract>=0.3",
     "pdf2image>=1.17",
     "Pillow>=10.0",
+    "pypdf>=4.0",
     "python-frontmatter>=1.1",
     "zkm>=0.4,<1.0",
 ]
@@ -42,6 +43,9 @@ Issues = "https://github.com/zommuter/zkm-scan/issues"
 scan = "zkm_scan"
 
 [project.optional-dependencies]
+heic = [
+    "pillow-heif>=0.13",
+]
 dev = [
     "pytest>=8",
     "ruff>=0.4",
