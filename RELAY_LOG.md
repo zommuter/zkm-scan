@@ -25,3 +25,7 @@ Worked id:5c02 — connected the pre-existing `_check_lang_packs()` helper into 
 ## 2026-06-13 10:47 — executor (sonnet, manual relay integration)
 
 feat(scan): id:5c02 graceful tesseract lang-pack error + pillow-heif lock (executor 1035, manual integration)
+
+## 2026-06-13 15:08 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: audited 2459d06 (REVIEW_ME owner decisions) clean — no code/test drift, suite 30 pass/1 skip; pointer v1→v2; 2 decision-driven follow-ups 874c/600c, zkm-photo 33e5 to inbox
