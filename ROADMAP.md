@@ -119,6 +119,37 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Context**: `_exif_datetime`/`_exif_str_to_iso` in convert.py; core schema
     in `src/zkm/conformance.py` (zkm core, importable from this env).
 
+- [ ] Namespace the OCR confidence frontmatter key `ocr_confidence` → `scan_ocr_confidence` [ROUTINE] <!-- id:874c -->
+  - **Why**: Owner decision 2026-06-13 (REVIEW_ME 5d7d / zkm id:cfd1, frontmatter-schema
+    mtg): the field is plugin-private (single OCR producer) and must follow the flat
+    `<plugin>_<key>` namespacing rule. Item 5d7d shipped the bare `ocr_confidence` key
+    (convert.py ~line 287) — this refines it to the agreed name.
+  - **Acceptance**: Emitted md frontmatter uses `scan_ocr_confidence:` (not
+    `ocr_confidence:`); same observe-only value semantics as 5d7d (mean word-level
+    confidence ≥0, rounded to 1 decimal, omit when unavailable). Update the 5d7d test's
+    assertion to the new key name (decision-driven rename, NOT a weakening — the original
+    `ocr_confidence` assertion is superseded by owner ruling). Reverts to bare
+    `ocr_confidence` ONLY if a second OCR consumer is named at implementation time.
+  - **Done-check**: `uv run pytest tests/test_roadmap.py -k 5d7d`
+  - **Context**: convert.py ~line 287 (`fm["ocr_confidence"] = confidence`). Supersedes
+    the closed 5d7d acceptance on the key name only.
+
+- [ ] DST-safe EXIF timezone offset (IANA zone, photo's own date) [ROUTINE] <!-- id:600c -->
+  - **Why**: Owner decision 2026-06-13 (REVIEW_ME aae8): item aae8 shipped
+    `dt.astimezone()` (convert.py `_exif_str_to_iso`, line 491) which attaches the
+    machine's CURRENT UTC offset, mixing up DST — a summer photo processed in winter
+    gets the winter offset. Safeguard: resolve the offset from a named IANA zone applied
+    to the photo's OWN naive date.
+  - **Acceptance**: `_exif_str_to_iso` localizes the naive EXIF datetime via
+    `zoneinfo.ZoneInfo(<local IANA zone>)` so the offset reflects the photo's date, not
+    "now". A naive Jan EXIF date and a naive Jul EXIF date on a DST zone (Europe/Zurich)
+    must yield `+01:00` and `+02:00` respectively. Still passes
+    `zkm.conformance.validate_frontmatter`. Add a test asserting the Jan/Jul offsets.
+  - **Done-check**: `uv run pytest tests/test_roadmap.py -k aae8`
+  - **Context**: convert.py `_exif_str_to_iso` (~line 483-493). Same safeguard applies to
+    zkm-photo 33e5 (cross-repo — routed to shared inbox). Supersedes the
+    `datetime.astimezone()` instruction in the closed aae8 acceptance.
+
 - [ ] Unify the scanned-only routing decision across zkm-pdf and zkm-scan [HARD — strong model] <!-- id:02bd -->
   - **Why HARD**: Cross-repo (zkm core + zkm-pdf + zkm-scan) API design: the
     text-layer probe and its threshold currently exist twice with independent
