@@ -194,7 +194,7 @@ def test_5d7d_ocr_confidence_in_frontmatter(store, src):  # roadmap:5d7d
         created = convert(store, cfg(src))
     assert len(created) == 1
     post = frontmatter.load(created[0])
-    assert post.metadata["ocr_confidence"] == 80.0  # (90+80+70)/3
+    assert post.metadata["scan_ocr_confidence"] == 80.0  # (90+80+70)/3  id:874c rename
 
 
 # ═══ id:f7d3 — HEIC/HEIF support via optional pillow-heif ═════════════════════
@@ -255,3 +255,25 @@ def test_aae8_pdf_frontmatter_has_pages(store, src):  # roadmap:aae8
     assert len(created) == 1
     post = frontmatter.load(created[0])
     assert post.metadata["pages"] == 2
+
+
+# ═══ id:600c — DST-safe EXIF timezone offset (IANA zone, photo's own date) ════
+
+def test_aae8_600c_dst_safe_exif_offset_jan_and_jul(monkeypatch):  # roadmap:aae8
+    """Jan EXIF date → winter offset; Jul EXIF date → summer offset (DST-safe).
+
+    Pins the DST-correct behaviour: a named IANA zone applied to the photo's
+    own naive date must yield +01:00 in January and +02:00 in July for
+    Europe/Zurich.  If the local zone is not Europe/Zurich the test is skipped.
+    """
+    from zoneinfo import ZoneInfo
+    from zkm_scan.convert import _exif_str_to_iso, _LOCAL_ZONE
+
+    if _LOCAL_ZONE is None or str(_LOCAL_ZONE) != "Europe/Zurich":
+        pytest.skip("Local zone is not Europe/Zurich — DST assertion only meaningful on owner's machine")
+
+    jan = _exif_str_to_iso("2024:01:15 14:30:00")
+    jul = _exif_str_to_iso("2024:07:15 14:30:00")
+
+    assert jan is not None and jan.endswith("+01:00"), f"Expected +01:00 for Jan, got {jan!r}"
+    assert jul is not None and jul.endswith("+02:00"), f"Expected +02:00 for Jul, got {jul!r}"
