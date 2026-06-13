@@ -194,7 +194,7 @@ def test_5d7d_ocr_confidence_in_frontmatter(store, src):  # roadmap:5d7d
         created = convert(store, cfg(src))
     assert len(created) == 1
     post = frontmatter.load(created[0])
-    assert post.metadata["ocr_confidence"] == 80.0  # (90+80+70)/3
+    assert post.metadata["scan_ocr_confidence"] == 80.0  # (90+80+70)/3  id:874c rename
 
 
 # ═══ id:f7d3 — HEIC/HEIF support via optional pillow-heif ═════════════════════

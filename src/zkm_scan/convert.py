@@ -281,10 +281,10 @@ def _emit_md(
     if ext == ".pdf":
         fm["pages"] = _count_pdf_pages(src_path, lang, dpi)
 
-    # id:5d7d — OCR confidence (observe-only)
+    # id:5d7d/id:874c — OCR confidence (observe-only; namespaced key)
     confidence = _ocr_confidence(src_path, lang, dpi)
     if confidence is not None:
-        fm["ocr_confidence"] = confidence
+        fm["scan_ocr_confidence"] = confidence
 
     body = f"[original {file_type}]({rel_link})\n\n{text}\n"
     write_atomic(out, frontmatter.dumps(frontmatter.Post(body, **fm)))
