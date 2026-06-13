@@ -102,7 +102,7 @@ every `pyproject.toml` version change is tagged `vX.Y.Z` in the same commit.
 Keep `PLUGIN_VERSION` in `src/zkm_scan/convert.py` and `version:` in BOTH
 plugin.yaml copies equal to the pyproject version.
 
-## Relay contract <!-- fables-executor contract v1 -->
+## Relay contract <!-- fables-executor contract v2 -->
 
 This repo is managed by a reviewer/executor relay. Load the `fables-executor` skill
 (`/fables-executor`) before working on any item, then follow its rules exactly.
