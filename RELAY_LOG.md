@@ -38,3 +38,7 @@ Worked id:600c — replaced `dt.astimezone()` in `_exif_str_to_iso` with `dt.rep
 ## 2026-06-13 15:32 — executor (sonnet, relay-loop)
 
 executor: id:874c rename ocr_confidence→scan_ocr_confidence + id:600c DST-safe EXIF offset via IANA ZoneInfo (2 ROUTINE items, 31 pass/1 skip)
+
+## 2026-06-13 23:04 — reviewer (claude-opus-4-8, relay-loop)
+
+review: audited 7a5e5f3 (REVIEW_ME R1 batch-confirm) clean — doc-only triage commit, no code/test drift in window. Re-ran suite from main checkout (worktree `../..` editable path breaks uv, known): 31 pass / 1 skip; the 3 confirmed boxes (6913/c199/f7d3) verified genuinely green. f7d3's `test_..._processed_when_supported` is by-design importorskip-guarded (optional `heic` extra absent) — legitimate skip per acceptance, not a gamed pass; supported-path remains unverified in this env. Contract pointer v2 == canonical, no refresh. All 9 ROUTINE items closed; routine_open=0; only HARD id:02bd (cross-repo routing unify) open. README lacks heic-extra/DPI mention but those shipped in prior windows — pre-existing minor drift, not introduced here. @manual Gherkin checklist unchanged.
