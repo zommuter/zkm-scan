@@ -32,3 +32,19 @@ config:
       Minimum number of OCR characters required to emit an md file.
       Files below this threshold are silently skipped (already-scanned images
       with no readable content, blank pages, etc.).
+  dpi:
+    required: false
+    default: 300
+    description: >
+      DPI (dots per inch) used when rasterizing PDF pages for OCR. Higher
+      values produce better OCR quality at the cost of memory and speed.
+      Default 300 is chosen for OCR quality over pdf2image's implicit 200.
+  pdf_text_threshold:
+    required: false
+    default: 100
+    description: >
+      Minimum extractable character count for a PDF to be considered a
+      "text PDF" (zkm-pdf territory). PDFs with at least this many extractable
+      characters are skipped (logged to zkm-scan-skipped.jsonl, reason
+      "text-layer"); scanned-only PDFs with fewer chars are OCR'd as usual.
+      Mirrors zkm-pdf's min_text_chars for routing parity.
