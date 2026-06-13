@@ -21,3 +21,7 @@ executor: implement id:6913/8810/c199/5d7d/f7d3/aae8 (6 ROUTINE items); BLOCKED 
 ## 2026-06-13 — executor (Sonnet)
 
 Worked id:5c02 — connected the pre-existing `_check_lang_packs()` helper into `convert()` with a single call at lang-resolution time. The prior BLOCKED was caused by `test_scan_lang_passed_to_pytesseract` in test_convert.py using `fra+deu` without mocking `pytesseract.get_languages()`; `fra` is not installed. Fixed by adding a `GET_LANGS` mock (returning `["fra", "deu", "eng", "osd"]`) to that test — additive change that preserves the test's intent while accommodating the new pre-check. Full suite: 30 passed, 1 skipped (pillow-heif importorskip). Friction: none; fix was a one-line call + one test mock.
+
+## 2026-06-13 10:47 — executor (sonnet, manual relay integration)
+
+feat(scan): id:5c02 graceful tesseract lang-pack error + pillow-heif lock (executor 1035, manual integration)
