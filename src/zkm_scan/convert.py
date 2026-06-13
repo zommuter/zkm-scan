@@ -19,6 +19,7 @@ import os
 import re
 from datetime import UTC, datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 import frontmatter
 import pytesseract
@@ -480,14 +481,43 @@ def _exif_datetime(path: Path) -> str | None:
     return None
 
 
+def _local_zone() -> ZoneInfo | None:
+    """Return the machine's local IANA timezone, or None if undetectable.
+
+    id:600c: use a named IANA zone so the UTC offset reflects the photo's own
+    date (DST-safe), not the machine's current offset at processing time.
+    """
+    try:
+        # Resolve /etc/localtime symlink → …/zoneinfo/Region/City
+        ltime = Path("/etc/localtime").resolve()
+        parts = ltime.parts
+        zi_idx = next(i for i, p in enumerate(parts) if p == "zoneinfo")
+        return ZoneInfo("/".join(parts[zi_idx + 1 :]))
+    except (StopIteration, ZoneInfoNotFoundError, Exception):
+        pass
+    try:
+        return ZoneInfo(Path("/etc/timezone").read_text().strip())
+    except (ZoneInfoNotFoundError, Exception):
+        pass
+    return None
+
+
+_LOCAL_ZONE: ZoneInfo | None = _local_zone()
+
+
 def _exif_str_to_iso(s: str) -> str | None:
     """Convert EXIF datetime string 'YYYY:MM:DD HH:MM:SS' to tz-aware ISO 8601.
 
-    id:aae8: attaches local timezone (astimezone()) to the naive EXIF value.
+    id:aae8/id:600c: localizes via a named IANA zone so the UTC offset is
+    resolved from the photo's own date, not the machine's current offset
+    (DST-safe). Falls back to astimezone() when the local zone is undetectable.
     """
     try:
         dt = datetime.strptime(s, "%Y:%m:%d %H:%M:%S")
-        # Attach local timezone — EXIF has no tz info, local is the best we have.
+        if _LOCAL_ZONE is not None:
+            # replace() with a named zone: offset is derived from photo's date
+            return dt.replace(tzinfo=_LOCAL_ZONE).isoformat(timespec="seconds")
+        # Fallback: attach current UTC offset (not DST-safe, but always works)
         return dt.astimezone().isoformat(timespec="seconds")
     except ValueError:
         return None

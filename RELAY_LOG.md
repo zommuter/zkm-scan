@@ -29,3 +29,8 @@ feat(scan): id:5c02 graceful tesseract lang-pack error + pillow-heif lock (execu
 ## 2026-06-13 15:08 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: audited 2459d06 (REVIEW_ME owner decisions) clean — no code/test drift, suite 30 pass/1 skip; pointer v1→v2; 2 decision-driven follow-ups 874c/600c, zkm-photo 33e5 to inbox
+
+## 2026-06-13 — executor (claude-sonnet-4-6)
+
+Worked id:874c — renamed `fm["ocr_confidence"]` → `fm["scan_ocr_confidence"]` in convert.py per owner namespacing rule; updated test_5d7d assertion (decision-driven, not a weakening).
+Worked id:600c — replaced `dt.astimezone()` in `_exif_str_to_iso` with `dt.replace(tzinfo=ZoneInfo(<local IANA zone>))` so UTC offset is resolved from the photo's own naive date; added `_local_zone()` helper (resolves via /etc/localtime symlink then /etc/timezone fallback); added `test_aae8_600c_dst_safe_exif_offset_jan_and_jul` asserting +01:00 Jan / +02:00 Jul for Europe/Zurich (skips if local zone differs). Full suite: 14 passed, 1 skipped (pillow-heif). Friction: worktree path breaks `uv run` (path `../..` resolves wrong); worked around via PYTHONPATH + UV_PROJECT_ENVIRONMENT pointing to main checkout venv.

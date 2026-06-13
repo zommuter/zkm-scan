@@ -134,7 +134,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Context**: convert.py ~line 287 (`fm["ocr_confidence"] = confidence`). Supersedes
     the closed 5d7d acceptance on the key name only.
 
-- [ ] DST-safe EXIF timezone offset (IANA zone, photo's own date) [ROUTINE] <!-- id:600c -->
+- [x] DST-safe EXIF timezone offset (IANA zone, photo's own date) [ROUTINE] <!-- id:600c -->
   - **Why**: Owner decision 2026-06-13 (REVIEW_ME aae8): item aae8 shipped
     `dt.astimezone()` (convert.py `_exif_str_to_iso`, line 491) which attaches the
     machine's CURRENT UTC offset, mixing up DST — a summer photo processed in winter
