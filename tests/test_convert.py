@@ -214,7 +214,11 @@ def test_scan_lang_passed_to_pytesseract(store, src):
         calls.append({"lang": lang})
         return "Captured lang test text"
 
-    with patch(OCR, side_effect=capture):
+    GET_LANGS = "zkm_scan.convert.pytesseract.get_languages"
+    with (
+        patch(GET_LANGS, return_value=["fra", "deu", "eng", "osd"]),
+        patch(OCR, side_effect=capture),
+    ):
         convert(store, cfg(src, lang="fra+deu"))
 
     assert calls

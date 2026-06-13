@@ -104,6 +104,9 @@ def convert(store_path: Path, config: dict, *, progress=None) -> list[Path]:
     src_dir_raw = str(config.get("source_dir", "") or "")
     pdf_text_threshold = int(config.get("pdf_text_threshold", 100))
 
+    # id:5c02 — pre-check lang packs before any OCR work
+    _check_lang_packs(lang)
+
     for subdir in ["scans", "originals/scans", "inbox/scans"]:
         (store_path / subdir).mkdir(parents=True, exist_ok=True)
 
