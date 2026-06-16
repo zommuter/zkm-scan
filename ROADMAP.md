@@ -1,4 +1,4 @@
-# Roadmap <!-- fables-turn roadmap v1 -->
+# Roadmap <!-- relay roadmap v1 -->
 
 Executor-facing task spec. Each item is sized for ONE Sonnet session. Items are
 the single source of truth — TODO.md carries only a summary line. Executors tick
@@ -161,6 +161,9 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Acceptance**: One probe implementation, one threshold, consumed by both
     plugins; ARCHITECTURE.md §Routing contract updated; both plugins' skip logs
     keep working; no window where a PDF is processed by both or neither.
+  - **Status (2026-06-16)**: GATED — non-executable by a single-repo executor;
+    needs coordinated zkm core + zkm-pdf + zkm-scan API design + release. Surfaced
+    for `/meeting` (id:2d20). Not auto-dispatched.
 
 ## Done (relay-verified)
 
