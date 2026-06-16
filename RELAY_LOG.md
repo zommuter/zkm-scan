@@ -54,3 +54,7 @@ review: audited 7a5e5f3 REVIEW_ME R1 triage clean — 31 pass/1 by-design skip, 
 ## 2026-06-13 23:29 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: audited 7a5e5f3 REVIEW_ME R1 triage clean — 31 pass/1 by-design skip, 6913/c199/f7d3 verified green, routine_open=0
+
+## 2026-06-16 16:27 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+handoff: C1 refresh relay pointer v2→v4 + README (dead SCAN_* env → snake_case config, shipped features); C2 re-derive queue (9 ROUTINE done, HARD id:02bd gated for /meeting), fix stale TODO summary; suite 31 pass/1 skip
