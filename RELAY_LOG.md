@@ -58,3 +58,7 @@ review: audited 7a5e5f3 REVIEW_ME R1 triage clean — 31 pass/1 by-design skip, 
 ## 2026-06-16 16:27 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 handoff: C1 refresh relay pointer v2→v4 + README (dead SCAN_* env → snake_case config, shipped features); C2 re-derive queue (9 ROUTINE done, HARD id:02bd gated for /meeting), fix stale TODO summary; suite 31 pass/1 skip
+
+## 2026-06-18 13:48 — reviewer (claude-opus-4-8, relay-loop)
+
+review: audited d44721b (single ROADMAP-only commit, /meeting --cross gated-HARD triage D2) clean — design-ledger annotation on existing HARD id:02bd adding the DECIDED direction (shared zkm.pdftext helper + single pdf_text_threshold key, pilot density discriminator w/ char-count fallback, subsumes zkm-pdf id:9475). gaming-scan clean; no test/code files touched (ROADMAP.md only); suite 31 pass/1 by-design skip (pillow-heif) from main checkout (worktree ../.. editable path breaks uv, known). §5b: id:02bd stays [HARD — strong model] + GATED (cross-repo coordinated 3-repo release, gated for /meeting id:2d20) — deferred, NOT promoted to executor-ready; TODO id:390f summary already consistent. Contract pointer v4 == canonical, no refresh. routine_open=0; only HARD id:02bd open.
