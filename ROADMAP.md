@@ -151,6 +151,16 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     `datetime.astimezone()` instruction in the closed aae8 acceptance.
 
 - [ ] Unify the scanned-only routing decision across zkm-pdf and zkm-scan [HARD — strong model] <!-- id:02bd -->
+  - **DECIDED 2026-06-18 (/meeting --cross gated-HARD triage).** Direction set (build still HARD,
+    coordinated 3-repo): extract ONE `zkm.pdftext` core helper returning a canonical char count
+    (adopt zkm-pdf's `.strip()`+skip-empty-pages semantics, id:1055-reviewed — the more correct
+    probe), consumed by BOTH plugins via a single shared `pdf_text_threshold` key → the two-probe
+    drift (PDF skipped by neither) becomes impossible by construction. **Discriminator: PILOT a
+    per-page density / text-coverage ratio; fall back to an evidence-backed char-count default
+    (calibrate from `zkm-pdf-skipped.jsonl` skip-logs) if the pilot doesn't beat it.** zkm-scan's
+    `min_text_chars=10` OCR-junk floor stays a SEPARATE key (not a routing decision). Accept old
+    keys as deprecated aliases for one release. Subsumes zkm-pdf id:9475. See
+    `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`.
   - **Why HARD**: Cross-repo (zkm core + zkm-pdf + zkm-scan) API design: the
     text-layer probe and its threshold currently exist twice with independent
     config keys (zkm-pdf `min_text_chars`=100; zkm-scan `pdf_text_threshold`
