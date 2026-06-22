@@ -150,7 +150,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     zkm-photo 33e5 (cross-repo — routed to shared inbox). Supersedes the
     `datetime.astimezone()` instruction in the closed aae8 acceptance.
 
-- [ ] Unify the scanned-only routing decision across zkm-pdf and zkm-scan [HARD — strong model] <!-- id:02bd -->
+- [ ] Unify the scanned-only routing decision across zkm-pdf and zkm-scan [HARD — meeting] <!-- id:02bd -->
   - **DECIDED 2026-06-18 (/meeting --cross gated-HARD triage).** Direction set (build still HARD,
     coordinated 3-repo): extract ONE `zkm.pdftext` core helper returning a canonical char count
     (adopt zkm-pdf's `.strip()`+skip-empty-pages semantics, id:1055-reviewed — the more correct
