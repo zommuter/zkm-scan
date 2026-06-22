@@ -66,3 +66,7 @@ review: audited d44721b (single ROADMAP-only commit, /meeting --cross gated-HARD
 ## 2026-06-18 13:56 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: audited d44721b (ROADMAP-only /meeting gated-HARD 02bd triage) clean — no code/test drift, suite 31 pass/1 skip, routine_open=0
+
+## 2026-06-22 16:01 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+Review of relay-ckpt-20260618-1356..HEAD — single LEDGER-ONLY commit 7554b86: relay(human) lane-tag migration of id:02bd from `[HARD — strong model]` → `[HARD — meeting]` (id:78ff explicit-lane convention). gaming-scan.sh CLEAN (no code/test churn). Test baseline green in main checkout: 31 passed, 1 skipped (pillow-heif importorskip — legitimate optional-dep skip, not a counted pass). Worktree pytest fails only on the editable `zkm==0.14.0 @ ../../` path not resolving from the cache worktree — environment artifact, not a regression. Verdict CORRECT: id:02bd is a cross-repo (zkm core + zkm-pdf + zkm-scan) design-gated HARD requiring a /meeting decision (id:2d20) before anyone can build — `[HARD — meeting]` is the accurate lane (matches its "Surfaced for /meeting. Not auto-dispatched" status), so the human migration is sound. Cross-ledger consistent: TODO id:390f accurately states "1 open ROADMAP item HARD id:02bd GATED for /meeting; 9 ROUTINE done". No reverse-handoff needed (no unqualified new items). Contract pointer already at v4 (current). routine_open=0 (sole open item is meeting-gated HARD, not executor work). No reopens, no gaming flags, no REVIEW_ME additions.
