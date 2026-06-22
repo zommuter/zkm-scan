@@ -66,3 +66,7 @@ review: audited d44721b (single ROADMAP-only commit, /meeting --cross gated-HARD
 ## 2026-06-18 13:56 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: audited d44721b (ROADMAP-only /meeting gated-HARD 02bd triage) clean — no code/test drift, suite 31 pass/1 skip, routine_open=0
+
+## 2026-06-22 21:26 — maintenance (manual, uv.lock cascade)
+
+uv.lock cascade refresh to zkm 0.16.0 — mechanical version-pin only (id:bae5), audit-exempt class (no code/spec change).
