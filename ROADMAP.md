@@ -152,30 +152,15 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
 
 - [ ] Switch zkm-scan to the shared `zkm.pdftext` helper (unify scanned-only routing with zkm-pdf) [ROUTINE] <!-- id:02bd -->
   - **DECIDED** 2026-06-18 (D2, `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`) + helper BUILT 2026-06-22 (`zkm/src/zkm/pdftext.py`). No longer a meeting — only the adoption never landed: zkm-scan still uses its OWN local `pdf_text_threshold` (`src/zkm_scan/convert.py:106`, `int(config.get("pdf_text_threshold", 100))`), not the shared helper, so cross-plugin drift (a PDF processed by neither) is still possible.
-  - **Acceptance**: zkm-scan resolves the threshold via `zkm.pdftext.resolve_threshold` (the single shared `pdf_text_threshold` key) instead of its local `config.get`; the `min_text_chars=10` OCR floor stays SEPARATE (it's a different concern). Deprecate the local key path as a one-release alias. Coordinated with id:9475 (zkm-pdf side). RED test: zkm-pdf and zkm-scan return the SAME scanned-only verdict for the same PDF + threshold.
-  - **DECIDED 2026-06-18 (/meeting --cross gated-HARD triage).** Direction set (build still HARD,
-    coordinated 3-repo): extract ONE `zkm.pdftext` core helper returning a canonical char count
-    (adopt zkm-pdf's `.strip()`+skip-empty-pages semantics, id:1055-reviewed — the more correct
-    probe), consumed by BOTH plugins via a single shared `pdf_text_threshold` key → the two-probe
-    drift (PDF skipped by neither) becomes impossible by construction. **Discriminator: PILOT a
-    per-page density / text-coverage ratio; fall back to an evidence-backed char-count default
-    (calibrate from `zkm-pdf-skipped.jsonl` skip-logs) if the pilot doesn't beat it.** zkm-scan's
-    `min_text_chars=10` OCR-junk floor stays a SEPARATE key (not a routing decision). Accept old
-    keys as deprecated aliases for one release. Subsumes zkm-pdf id:9475. See
-    `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`.
-  - **Why HARD**: Cross-repo (zkm core + zkm-pdf + zkm-scan) API design: the
-    text-layer probe and its threshold currently exist twice with independent
-    config keys (zkm-pdf `min_text_chars`=100; zkm-scan `pdf_text_threshold`
-    after 6913) and can drift, recreating the double-ingest bug in reverse
-    (both plugins skipping). Needs a single source of truth (likely a
-    `zkm.pdftext` core helper + one shared config key), a migration story for
-    existing configs, and coordinated releases of three repos.
-  - **Acceptance**: One probe implementation, one threshold, consumed by both
-    plugins; ARCHITECTURE.md §Routing contract updated; both plugins' skip logs
-    keep working; no window where a PDF is processed by both or neither.
-  - **Status (2026-06-16)**: GATED — non-executable by a single-repo executor;
-    needs coordinated zkm core + zkm-pdf + zkm-scan API design + release. Surfaced
-    for `/meeting` (id:2d20). Not auto-dispatched.
+  - **Acceptance**: zkm-scan resolves the threshold via `zkm.pdftext.resolve_threshold` (the single shared `pdf_text_threshold` key) instead of its local `config.get` (`src/zkm_scan/convert.py:106`, currently `int(config.get("pdf_text_threshold", 100))`); the `min_text_chars=10` OCR floor stays SEPARATE (it's a different concern). Deprecate the local key path as a one-release alias. Coordinated with id:9475 (zkm-pdf side). RED test: zkm-pdf and zkm-scan return the SAME scanned-only verdict for the same PDF + threshold.
+  - **Done-check**: `uv run pytest tests/test_roadmap.py -k 02bd`
+  - **History**: Originally `[HARD — meeting]`/GATED-for-`/meeting` id:2d20 (the cross-repo
+    `zkm.pdftext` helper + shared-key API design). The DESIGN is settled and the HELPER shipped
+    2026-06-22 (`zkm/src/zkm/pdftext.py`, providing `resolve_threshold`/`probe`/`is_scanned_only`,
+    adopting zkm-pdf's `.strip()`+skip-empty-pages semantics, id:1055-reviewed) — so this is no
+    longer a meeting and no longer HARD: only the single-repo ADOPTION (swapping zkm-scan's local
+    `config.get` for the shared resolver) remains, which is one Sonnet session. Subsumes zkm-pdf
+    id:9475. See `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`.
 
 ## Done (relay-verified)
 

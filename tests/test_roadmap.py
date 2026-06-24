@@ -277,3 +277,47 @@ def test_aae8_600c_dst_safe_exif_offset_jan_and_jul(monkeypatch):  # roadmap:aae
 
     assert jan is not None and jan.endswith("+01:00"), f"Expected +01:00 for Jan, got {jan!r}"
     assert jul is not None and jul.endswith("+02:00"), f"Expected +02:00 for Jul, got {jul!r}"
+
+
+# ═══ id:02bd — switch zkm-scan to the shared zkm.pdftext helper ═══════════════
+
+def test_02bd_scan_routing_agrees_with_shared_pdftext(tmp_path):  # roadmap:02bd
+    """zkm-scan's text-layer routing must match the shared zkm.pdftext oracle.
+
+    The cross-plugin drift this item closes is concrete: zkm-scan's local
+    `_probe_pdf_text` counts `len(page.extract_text() or "")` (NO `.strip()`),
+    while the shared `zkm.pdftext.probe` counts `len(text.strip())`. For a
+    whitespace-padded PDF the two char-counts straddle the threshold, so the two
+    plugins return DIFFERENT scanned-only verdicts for the SAME PDF — a PDF that
+    gets processed by neither (or both). RED until zkm-scan derives its routing
+    from `zkm.pdftext` (same probe semantics + the shared `pdf_text_threshold`
+    via `resolve_threshold`).
+    """
+    import pypdf
+
+    from zkm_scan.convert import _probe_pdf_text
+    from zkm.pdftext import probe, is_scanned_only, resolve_threshold
+
+    # A page whose visible text is short (≈40 stripped chars) but is heavily
+    # whitespace-padded so the unstripped count exceeds the threshold.
+    visible = "scanned receipt header only"
+    pdf = make_text_pdf(tmp_path / "padded.pdf", visible + (" " * 200))
+
+    reader = pypdf.PdfReader(str(pdf))
+    oracle_probe = probe(reader)
+    threshold = resolve_threshold({"pdf_text_threshold": 100})
+
+    # Oracle: stripped count is small → scanned-only (must be OCR'd by zkm-scan).
+    oracle_scanned_only = is_scanned_only(oracle_probe, threshold)
+
+    # zkm-scan's own verdict for the same PDF + same threshold.
+    scan_chars = _probe_pdf_text(pdf)
+    assert scan_chars is not None, "probe should not fail on a valid PDF"
+    scan_scanned_only = scan_chars < threshold
+
+    assert scan_scanned_only == oracle_scanned_only, (
+        "zkm-scan and zkm.pdftext disagree on the scanned-only verdict for the "
+        f"same PDF+threshold (scan_chars={scan_chars}, "
+        f"oracle_stripped={oracle_probe.total_chars}, threshold={threshold}) — "
+        "adopt zkm.pdftext to close the drift."
+    )
