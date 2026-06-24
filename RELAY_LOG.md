@@ -89,3 +89,7 @@ review(02bd): verified HARD→ROUTINE re-scope, consolidated item + added red sp
 ## 2026-06-24 — executor (claude-sonnet-4-6)
 
 Worked id:02bd — switched zkm-scan's scanned-only routing to the shared `zkm.pdftext` helper. Three changes in `src/zkm_scan/convert.py`: (1) import `resolve_threshold as _pdftext_resolve_threshold` from `zkm.pdftext`; (2) replace `int(config.get("pdf_text_threshold", 100))` in `convert()` with `_pdftext_resolve_threshold(config)` — the local key is still honoured via resolve_threshold's priority-1 top-level lookup; (3) update `_probe_pdf_text` to use `.strip()` semantics matching `zkm.pdftext.probe` (was: `len(page.extract_text() or "")`, now: `len(text.strip())` with None→0). This closes the whitespace-padding drift: a whitespace-padded PDF now returns the same scanned-only verdict in both plugins. Full suite: 32 passed, 1 skipped (pillow-heif importorskip, legitimate). Worktree note: tests run with `PYTHONPATH=zkm/src:worktree/src` + `UV_PROJECT_ENVIRONMENT` pointing to main checkout .venv (known worktree `../..` editable path issue). Friction: none — seam was well-defined, fix was surgical.
+
+## 2026-06-24 17:33 — executor (sonnet, relay-loop)
+
+id:02bd — adopt zkm.pdftext shared helper for scanned-only routing (stripped char count + resolve_threshold); 32 passed, 1 skipped
