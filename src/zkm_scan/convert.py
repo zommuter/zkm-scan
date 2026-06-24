@@ -30,6 +30,7 @@ from zkm.atomic import write_atomic
 from zkm.cas import write_object
 from zkm.hashing import sha256_file
 from zkm.inbox import build_canonical_index, symlink_with_sidecar
+from zkm.pdftext import resolve_threshold as _pdftext_resolve_threshold
 from zkm.sidecar import merge_producer, read_sidecar
 
 PLUGIN_NAME = "scan"
@@ -103,7 +104,10 @@ def convert(store_path: Path, config: dict, *, progress=None) -> list[Path]:
     min_chars = int(config.get("min_text_chars", 10))
     dpi = int(config.get("dpi", 300))
     src_dir_raw = str(config.get("source_dir", "") or "")
-    pdf_text_threshold = int(config.get("pdf_text_threshold", 100))
+    # id:02bd — resolve via shared helper (single source of truth across plugins);
+    # the local `pdf_text_threshold` key is still honoured via resolve_threshold's
+    # priority-1 top-level lookup, so existing configs need no change.
+    pdf_text_threshold = _pdftext_resolve_threshold(config)
 
     # id:5c02 — pre-check lang packs before any OCR work
     _check_lang_packs(lang)
@@ -392,15 +396,24 @@ def _ocr_confidence(path: Path, lang: str, dpi: int = 300) -> float | None:
 # ── PDF text-layer probe (id:6913) ────────────────────────────────────────────
 
 def _probe_pdf_text(path: Path) -> int | None:
-    """Return char count of extractable text in PDF, or None on failure.
+    """Return stripped char count of extractable text in PDF, or None on failure.
 
-    Uses pypdf. Failure (corrupt PDF, import error) returns None so the file
-    falls through to OCR (when in doubt, scan).
+    id:02bd — uses the same counting semantics as zkm.pdftext.probe:
+    total_chars = Σ len(page.extract_text().strip()) over all pages,
+    where None returns contribute 0. This ensures cross-plugin agreement on
+    the scanned-only verdict for whitespace-padded PDFs.
+
+    Failure (corrupt PDF, import error) returns None so the file falls through
+    to OCR (when in doubt, scan).
     """
     try:
         import pypdf  # type: ignore[import]
         reader = pypdf.PdfReader(str(path))
-        total = sum(len(page.extract_text() or "") for page in reader.pages)
+        total = 0
+        for page in reader.pages:
+            text = page.extract_text()
+            if text is not None:
+                total += len(text.strip())
         return total
     except Exception:  # noqa: BLE001
         return None
