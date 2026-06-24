@@ -150,7 +150,9 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     zkm-photo 33e5 (cross-repo — routed to shared inbox). Supersedes the
     `datetime.astimezone()` instruction in the closed aae8 acceptance.
 
-- [ ] Unify the scanned-only routing decision across zkm-pdf and zkm-scan [HARD — meeting] <!-- id:02bd -->
+- [ ] Switch zkm-scan to the shared `zkm.pdftext` helper (unify scanned-only routing with zkm-pdf) [ROUTINE] <!-- id:02bd -->
+  - **DECIDED** 2026-06-18 (D2, `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`) + helper BUILT 2026-06-22 (`zkm/src/zkm/pdftext.py`). No longer a meeting — only the adoption never landed: zkm-scan still uses its OWN local `pdf_text_threshold` (`src/zkm_scan/convert.py:106`, `int(config.get("pdf_text_threshold", 100))`), not the shared helper, so cross-plugin drift (a PDF processed by neither) is still possible.
+  - **Acceptance**: zkm-scan resolves the threshold via `zkm.pdftext.resolve_threshold` (the single shared `pdf_text_threshold` key) instead of its local `config.get`; the `min_text_chars=10` OCR floor stays SEPARATE (it's a different concern). Deprecate the local key path as a one-release alias. Coordinated with id:9475 (zkm-pdf side). RED test: zkm-pdf and zkm-scan return the SAME scanned-only verdict for the same PDF + threshold.
   - **DECIDED 2026-06-18 (/meeting --cross gated-HARD triage).** Direction set (build still HARD,
     coordinated 3-repo): extract ONE `zkm.pdftext` core helper returning a canonical char count
     (adopt zkm-pdf's `.strip()`+skip-empty-pages semantics, id:1055-reviewed — the more correct
