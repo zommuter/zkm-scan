@@ -93,3 +93,7 @@ Worked id:02bd — switched zkm-scan's scanned-only routing to the shared `zkm.p
 ## 2026-06-24 17:33 — executor (sonnet, relay-loop)
 
 id:02bd — adopt zkm.pdftext shared helper for scanned-only routing (stripped char count + resolve_threshold); 32 passed, 1 skipped
+
+## 2026-06-26 10:09 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: TODO conformance commit clean; verified id:02bd green (executor-checkpoint blind-spot), reconciled drained ROADMAP + stale TODO id:390f summary
