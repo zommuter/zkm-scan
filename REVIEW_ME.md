@@ -19,3 +19,14 @@ Max ~10 open boxes; the reviewer prunes resolved ones each review turn.
   (reason "heic-unsupported") instead of an error or silent invisibility;
   the dep stays an optional `heic` extra.
   — confirmed by user 2026-06-13 (batch triage)
+- [x] id:02bd — the executor's 02bd close (commit 4e259e8) was tagged at its OWN
+  checkpoint (relay-ckpt-20260624-1733), so the normal "review-follows-execute" window
+  excluded it (boundary blind-spot). Verified GREEN this review (2026-06-26): genuine
+  surgical impl (imports `zkm.pdftext.resolve_threshold`, switches `_probe_pdf_text` to
+  `.strip()` semantics), test file untouched, `pytest -k 02bd` passes, gaming-scan clean.
+  No human action needed — recorded for audit completeness.
+- [ ] ROADMAP is genuinely DRAINED (all 10 ROUTINE done). The TODO summary line id:390f
+  is the standing relay-status checkbox (the tactical ledger lives in central
+  `~/src/zkm/TODO.md`), so `unpromoted-scan.sh` will keep surfacing it as "1 un-promoted
+  item / needs HANDOFF" — that is the summary-line convention, NOT real backlog. Next pool
+  pass is idle/handoff, not execute (routine_open=0).

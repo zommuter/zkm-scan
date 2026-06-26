@@ -171,3 +171,6 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
 - id:f7d3 — HEIC/HEIF support via optional pillow-heif extra
 - id:aae8 — tz-aware EXIF dates + pages field for PDF-sourced docs
 - id:5c02 — graceful ValueError for missing tesseract language packs
+- id:874c — namespace OCR confidence key `ocr_confidence` → `scan_ocr_confidence`
+- id:600c — DST-safe EXIF timezone offset (IANA zone on the photo's own date)
+- id:02bd — adopt shared `zkm.pdftext` helper for scanned-only routing (stripped char count + `resolve_threshold`; verified green 2026-06-26)
