@@ -25,7 +25,7 @@ Max ~10 open boxes; the reviewer prunes resolved ones each review turn.
   surgical impl (imports `zkm.pdftext.resolve_threshold`, switches `_probe_pdf_text` to
   `.strip()` semantics), test file untouched, `pytest -k 02bd` passes, gaming-scan clean.
   No human action needed — recorded for audit completeness.
-- [ ] ROADMAP is genuinely DRAINED (all 10 ROUTINE done). The TODO summary line id:390f
+- [x] ROADMAP is genuinely DRAINED (all 10 ROUTINE done). The TODO summary line id:390f — ✅ ack 2026-06-30 /relay human: confirmed: all 10 ROUTINE done; id:390f is the standing relay-status summary-line convention, not real backlog.
   is the standing relay-status checkbox (the tactical ledger lives in central
   `~/src/zkm/TODO.md`), so `unpromoted-scan.sh` will keep surfacing it as "1 un-promoted
   item / needs HANDOFF" — that is the summary-line convention, NOT real backlog. Next pool
