@@ -97,3 +97,7 @@ id:02bd — adopt zkm.pdftext shared helper for scanned-only routing (stripped c
 ## 2026-06-26 10:09 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: TODO conformance commit clean; verified id:02bd green (executor-checkpoint blind-spot), reconciled drained ROADMAP + stale TODO id:390f summary
+
+## 2026-07-01 14:56 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: window was 1 human REVIEW_ME ack (no code); suite green (15p/1skip), ROADMAP drained; refreshed contract pointer v4→v6, pruned resolved REVIEW_ME boxes [id:[,]]
