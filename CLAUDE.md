@@ -102,7 +102,7 @@ every `pyproject.toml` version change is tagged `vX.Y.Z` in the same commit.
 Keep `PLUGIN_VERSION` in `src/zkm_scan/convert.py` and `version:` in BOTH
 plugin.yaml copies equal to the pyproject version.
 
-## Relay contract <!-- relay-executor contract v4 -->
+## Relay contract <!-- relay-executor contract v6 -->
 
 This repo is managed by a reviewer/executor relay. Load `/relay executor` before
 working on any item, then follow its rules exactly.
