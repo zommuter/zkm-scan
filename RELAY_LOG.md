@@ -113,3 +113,7 @@ review: genuine Fable recheck — empty window, FULL suite 32p/1s green at 075f8
 ## 2026-07-02 08:32 — reviewer (claude-fable-5, relay-loop)
 
 review: empty window since relay-ckpt-20260702-0031 (0 commits), suite 32p/1s green, board drained (routine_open=0); classifier "unaudited commits" verdict was spurious — dispatch dropped the relay.toml # path: override (routed:0537 to dotclaude-skills)
+
+## 2026-07-02 10:00 — reviewer (claude-fable-5, relay-loop)
+
+review: ledger-only window (ckpt append + id:390f defang), suite 32p/1s green, gaming-scan clean, board drained; lint-ok'd id:390f orphan line (todo-conformance clean) @ 98298d8 [id:390f]
