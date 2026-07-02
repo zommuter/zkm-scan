@@ -117,3 +117,7 @@ review: empty window since relay-ckpt-20260702-0031 (0 commits), suite 32p/1s gr
 ## 2026-07-02 10:00 — reviewer (claude-fable-5, relay-loop)
 
 review: ledger-only window (ckpt append + id:390f defang), suite 32p/1s green, gaming-scan clean, board drained; lint-ok'd id:390f orphan line (todo-conformance clean) @ 98298d8 [id:390f]
+
+## 2026-07-02 12:40 — reviewer (claude-fable-5, relay-loop)
+
+review: ledger-tail-only window (prev review's 2 ledger commits past mis-anchored tag — id:25aa 3rd occurrence, already tracked in dotclaude-skills), suite 32p/1s green, gaming-scan clean, board drained, zero-commit branch closes the window via id:8e3e [id:390f]
