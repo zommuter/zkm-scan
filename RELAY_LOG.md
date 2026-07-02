@@ -109,3 +109,7 @@ Fable recheck of the pending optional audit (relay.toml last_strong_ckpt=relay-c
 ## 2026-07-02 00:31 — reviewer (claude-fable-5, relay-loop)
 
 review: genuine Fable recheck — empty window, FULL suite 32p/1s green at 075f8bb, all 10 board ids independently confirmed, board drained; flip fable_rechecked=2026-07-02 [id:6913,8810,5c02,c199,5d7d,f7d3,aae8,874c,600c,02bd]
+
+## 2026-07-02 08:32 — reviewer (claude-fable-5, relay-loop)
+
+review: empty window since relay-ckpt-20260702-0031 (0 commits), suite 32p/1s green, board drained (routine_open=0); classifier "unaudited commits" verdict was spurious — dispatch dropped the relay.toml # path: override (routed:0537 to dotclaude-skills)
