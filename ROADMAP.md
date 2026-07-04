@@ -118,6 +118,10 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Done-check**: `uv run pytest tests/test_roadmap.py -k aae8`
   - **Context**: `_exif_datetime`/`_exif_str_to_iso` in convert.py; core schema
     in `src/zkm/conformance.py` (zkm core, importable from this env).
+  - **Note (2026-07-04 review)**: the feature (tz-aware EXIF + pages) is intact, but
+    `test_aae8_exif_date_is_tz_aware_and_conformant` is currently RED — collateral of the
+    bare `ocr_chars` frontmatter key core now warns on. Fix owned by open id:1686; this
+    item stays closed on its own acceptance.
 
 - [x] Namespace the OCR confidence frontmatter key `ocr_confidence` → `scan_ocr_confidence` [ROUTINE] <!-- id:874c -->
   - **Why**: Owner decision 2026-06-13 (REVIEW_ME 5d7d / zkm id:cfd1, frontmatter-schema
@@ -161,6 +165,14 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
     longer a meeting and no longer HARD: only the single-repo ADOPTION (swapping zkm-scan's local
     `config.get` for the shared resolver) remains, which is one Sonnet session. Subsumes zkm-pdf
     id:9475. See `dotclaude-skills/docs/meeting-notes/2026-06-18-1219-cross-gated-hard-triage.md`.
+
+- [ ] Namespace the frontmatter key `ocr_chars` → `scan_ocr_chars` (sibling gap left by id:874c) [ROUTINE] <!-- id:1686 -->
+  - **Why**: zkm core id:e2c4 added a warn-level conformance rule (`zkm.conformance.validate_frontmatter`) — a plugin-emitted bare scalar frontmatter key must be core-owned or `<plugin>_`-prefixed. id:874c namespaced the sibling `ocr_confidence` → `scan_ocr_confidence` per the owner's 2026-06-13 flat-namespacing ruling, but left the `ocr_chars` frontmatter key bare. Core now flags it, which fails the aae8 conformance assertion. Regression surfaced 2026-07-04 (empty zkm-scan window; drift entered via the `zkm==0.16.0` editable dep, not a zkm-scan commit).
+  - **Scope precision**: rename ONLY the FRONTMATTER emission at `src/zkm_scan/convert.py:282` (`fm["ocr_chars"]`/the `fm` dict literal). The `ocr_chars` at `src/zkm_scan/convert.py:254` is a `.zkm-state/*-skipped.jsonl` skip-log JSON field (id:8810), NOT md frontmatter — the conformance rule does not apply to it; leave it (and its consumer `tests/test_roadmap.py:126` `entries[0]["ocr_chars"] == 1`) UNCHANGED.
+  - **Acceptance**: Emitted md frontmatter uses `scan_ocr_chars:` (not bare `ocr_chars:`); same value semantics (`len(text)`). Update the frontmatter-key consumers: `tests/test_convert.py:55` (`post.metadata["scan_ocr_chars"] > 0`) and `ARCHITECTURE.md:74`. Decision-driven rename per the same owner ruling as id:874c — NOT a weakening.
+  - **Tests**: `tests/test_roadmap.py::test_aae8_exif_date_is_tz_aware_and_conformant` (`# roadmap:aae8`) is the RED spec — it asserts `validate_frontmatter(...) == []` and currently fails on the `ocr_chars` warn. No new red test needed.
+  - **Done-check**: `uv run pytest tests/test_roadmap.py -k aae8` (green) AND `uv run pytest -q` (full suite green).
+  - **Context**: `src/zkm_scan/convert.py:282`; mirrors closed id:874c (`ocr_confidence`); core rule in `zkm/src/zkm/conformance.py:174-189` (id:e2c4).
 
 ## Done (relay-verified)
 
