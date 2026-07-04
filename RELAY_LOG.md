@@ -125,3 +125,7 @@ review: ledger-tail-only window (prev review's 2 ledger commits past mis-anchore
 ## 2026-07-04 20:19 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: empty window (ckpt-tail, id:25aa mis-anchor) but full suite 1F/31p/1s — aae8 conformance test RED from zkm core e2c4 flagging bare ocr_chars key; filed [ROUTINE] id:1686 (rename→scan_ocr_chars), gaming-scan/lint/doctor clean, routine_open=1 [id:1686,aae8,390f]
+
+## 2026-07-04 21:06 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: empty window (only supervisor ledger commit gating id:1686); suite 1F/31p/1s — the 1 fail is the EXPECTED-RED aae8 conformance spec for gated id:1686; gaming-scan/lint/doctor clean; routine_open=0 [id:1686]
