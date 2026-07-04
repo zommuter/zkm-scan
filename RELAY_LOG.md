@@ -121,3 +121,7 @@ review: ledger-only window (ckpt append + id:390f defang), suite 32p/1s green, g
 ## 2026-07-02 12:40 — reviewer (claude-fable-5, relay-loop)
 
 review: ledger-tail-only window (prev review's 2 ledger commits past mis-anchored tag — id:25aa 3rd occurrence, already tracked in dotclaude-skills), suite 32p/1s green, gaming-scan clean, board drained, zero-commit branch closes the window via id:8e3e [id:390f]
+
+## 2026-07-04 20:19 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: empty window (ckpt-tail, id:25aa mis-anchor) but full suite 1F/31p/1s — aae8 conformance test RED from zkm core e2c4 flagging bare ocr_chars key; filed [ROUTINE] id:1686 (rename→scan_ocr_chars), gaming-scan/lint/doctor clean, routine_open=1 [id:1686,aae8,390f]
