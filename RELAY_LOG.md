@@ -133,3 +133,7 @@ review: empty window (only supervisor ledger commit gating id:1686); suite 1F/31
 ## 2026-07-11 14:30 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: window all-ledger (no code); gaming-scan clean; suite 31p/1skip/1 expected-red (aae8=open id:1686); fixed roadmap-lint lane conflict on id:1686; routine_open=1 [id:1686]
+
+## 2026-07-11 14:46 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review zkm-scan: no code changes since ckpt; aae8 verified genuinely RED (blocked by both ocr_chars + cross-repo `original` key), id:1686 decision-gate re-tag correct; synced stale TODO summary label; routine_open=0 [id:1686,390f]
