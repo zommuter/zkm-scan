@@ -129,3 +129,7 @@ review: empty window (ckpt-tail, id:25aa mis-anchor) but full suite 1F/31p/1s �
 ## 2026-07-04 21:06 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review: empty window (only supervisor ledger commit gating id:1686); suite 1F/31p/1s — the 1 fail is the EXPECTED-RED aae8 conformance spec for gated id:1686; gaming-scan/lint/doctor clean; routine_open=0 [id:1686]
+
+## 2026-07-11 14:30 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: window all-ledger (no code); gaming-scan clean; suite 31p/1skip/1 expected-red (aae8=open id:1686); fixed roadmap-lint lane conflict on id:1686; routine_open=1 [id:1686]
