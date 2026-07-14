@@ -20,7 +20,7 @@ whichever lands first defines the writer helper; the other reuses it. Entry shap
   - **Done-check**: `uv run pytest tests/test_roadmap.py -k aae8` (green) AND `uv run pytest -q` (full suite green).
   - **Context**: `src/zkm_scan/convert.py:282`; mirrors closed id:874c (`ocr_confidence`); core rule in `zkm/src/zkm/conformance.py:174-189` (id:e2c4).
 
-- [ ] [HARD — meeting] 🚧 GATED: the `original` frontmatter key needs a cross-repo core-registry ruling (shared by zkm-pdf/zkm-eml/zkm-photo, not core-owned) — needs a /meeting decision. Split from id:1686 (2026-07-14). <!-- id:df3e -->
+- [x] [HARD — meeting] The `original` frontmatter key cross-plugin registry ruling — RESOLVED 2026-07-14 (no meeting needed; decided by the cfd1/f421 D2/D3 field doctrine): `original` is a cross-plugin scalar with UNIFORM meaning (store-relative path to the preserved original source; 4 emitters zkm-pdf/eml/photo/scan) → REGISTER CORE-OWNED (like sha256/subject/project), NOT namespaced. Work FOLDED into the f421 cross-plugin sweep (zkm-calendar). Split from id:1686 (2026-07-14). <!-- id:df3e -->
 ## Done (relay-verified)
 
 - id:6913 — zkm-pdf routing contract (text-layer probe + pdf-producer sidecar skip)
