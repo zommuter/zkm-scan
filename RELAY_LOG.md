@@ -137,3 +137,7 @@ review: window all-ledger (no code); gaming-scan clean; suite 31p/1skip/1 expect
 ## 2026-07-11 14:46 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
 
 review zkm-scan: no code changes since ckpt; aae8 verified genuinely RED (blocked by both ocr_chars + cross-repo `original` key), id:1686 decision-gate re-tag correct; synced stale TODO summary label; routine_open=0 [id:1686,390f]
+
+## 2026-07-14 13:21 — reviewer (claude-opus-4-8, fable-standin, relay-loop)
+
+review: verified id:1686 correctly [HARD — decision gate] (aae8 red genuine: both ocr_chars+original bare keys flagged, rename alone can't green Done-check, gated on f421 core-registration); df3e closed; ledger coherent; 0 open ROUTINE [id:1686,df3e]
